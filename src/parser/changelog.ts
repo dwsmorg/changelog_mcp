@@ -58,22 +58,33 @@ export async function getChangelogContent(
   return readFileContent(changelogPath);
 }
 
+/** Result of finding the insert position */
+export interface InsertPositionResult {
+  /** Character index where the new entry should be inserted */
+  position: number;
+  /** Whether a known changelog format was detected */
+  formatRecognized: boolean;
+}
+
 /**
  * Finds the position where a new entry should be inserted.
  *
- * For Keep a Changelog format, this is after the header and
- * before the first version section (## [X.Y.Z]).
+ * Supports all formats: Keep a Changelog (## [X.Y.Z]),
+ * Conventional (## X.Y.Z), DWSM (vX.Y.Z (date)).
  *
  * @param content - Current changelog content
- * @returns Character index where the new entry should be inserted
+ * @returns Insert position and whether the format was recognized
  */
-export function findInsertPosition(content: string): number {
-  // Match the first version heading: ## [X.Y.Z] or ## X.Y.Z
-  const versionHeadingPattern = /^## \[?\d+\.\d+\.\d+\]?/m;
+export function findInsertPosition(content: string): InsertPositionResult {
+  // Match the first version heading across all formats:
+  // - Keep a Changelog: ## [X.Y.Z]
+  // - Conventional:     ## X.Y.Z
+  // - DWSM:            vX.Y.Z (date)
+  const versionHeadingPattern = /^(?:## \[?\d+\.\d+\.\d+\]?|v\d+\.\d+\.\d+\s*\()/m;
   const match = content.match(versionHeadingPattern);
 
   if (match && match.index !== undefined) {
-    return match.index;
+    return { position: match.index, formatRecognized: true };
   }
 
   // No version heading found - insert after header
@@ -82,11 +93,11 @@ export function findInsertPosition(content: string): number {
   const headerMatch = content.match(headerPattern);
 
   if (headerMatch && headerMatch.index !== undefined) {
-    return headerMatch.index + headerMatch[0].length;
+    return { position: headerMatch.index + headerMatch[0].length, formatRecognized: false };
   }
 
-  // Fallback: append at end
-  return content.length;
+  // Fallback: prepend at beginning
+  return { position: 0, formatRecognized: false };
 }
 
 /**

@@ -1,6 +1,6 @@
 {
   "name": "@dwsm/changelog-mcp",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Universal Changelog MCP Server - manage changelogs from any AI assistant",
   "type": "module",
   "main": "dist/index.js",

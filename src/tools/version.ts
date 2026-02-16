@@ -9,8 +9,8 @@ import { loadConfig } from "../config/loader.js";
 import { getCurrentVersion } from "../parser/changelog.js";
 import {
   bumpVersion,
+  getInitialVersion,
   FALLBACK_VERSION,
-  INITIAL_VERSION,
 } from "../parser/version.js";
 import type { ToolResponse } from "./types.js";
 
@@ -25,6 +25,7 @@ export async function handleGetCurrentVersion(): Promise<ToolResponse> {
     const version = await getCurrentVersion(config);
 
     if (version === FALLBACK_VERSION) {
+      const initialVersion = getInitialVersion(config.versioning);
       return {
         content: [
           {
@@ -32,7 +33,7 @@ export async function handleGetCurrentVersion(): Promise<ToolResponse> {
             text:
               `Aktuelle Version: ${version}\n` +
               `Hinweis: Keine Version im Changelog gefunden. ` +
-              `Nächste Version wird ${INITIAL_VERSION} sein.`,
+              `Nächste Version wird ${initialVersion} sein.`,
           },
         ],
       };
@@ -74,10 +75,9 @@ export async function handleGetNextVersion(
 
     let nextVersion: string;
     if (currentVersion === FALLBACK_VERSION) {
-      // No version found, start at initial version
-      nextVersion = INITIAL_VERSION;
+      nextVersion = getInitialVersion(config.versioning);
     } else {
-      nextVersion = bumpVersion(currentVersion, bump);
+      nextVersion = bumpVersion(currentVersion, bump, config.versioning);
     }
 
     return {

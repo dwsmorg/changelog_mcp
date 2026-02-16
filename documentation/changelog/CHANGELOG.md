@@ -1,3 +1,22 @@
+## [0.1.7] - 2026-02-16
+
+### Fixed
+- 4 kritische Bugs im Changelog-Management behoben
+  - findInsertPosition: Neue Einträge wurden am Ende der Datei angehängt statt am Anfang eingefügt (Fallback auf Position 0, DWSM-Format vX.Y.Z im Heading-Pattern ergänzt)
+  - dateFormat: Config-Einstellung (z.B. DD.MM.YYYY) wurde ignoriert, Datum war hardcoded auf YYYY-MM-DD. Neue formatDate() Utility mit Token-Ersetzung.
+  - extractVersion: DWSM-Format (vX.Y.Z) wurde nicht erkannt, dadurch stille Schreibfehler bei bestehenden non-standard Changelogs. Warnung wird jetzt ausgegeben wenn kein Format erkannt wird.
+  - fixedMajor/fixedMinor: Config-Einstellungen wurden ignoriert, erste Version war immer hardcoded 0.1.0. Neue getInitialVersion() liest aus Config, bumpVersion() respektiert patch-only Modus.
+
+### Files
+- src/parser/version.ts
+- src/parser/changelog.ts
+- src/tools/add.ts
+- src/tools/preview.ts
+- src/tools/version.ts
+- src/utils/date.ts
+
+
+
 ## [0.1.6] - 2026-02-16
 
 ### Changed

@@ -15,8 +15,8 @@ import {
 } from "../parser/changelog.js";
 import {
   bumpVersion,
+  getInitialVersion,
   FALLBACK_VERSION,
-  INITIAL_VERSION,
 } from "../parser/version.js";
 import { getFormatter } from "../formats/registry.js";
 import { createBackup } from "../utils/backup.js";
@@ -27,18 +27,8 @@ import {
 } from "../utils/file.js";
 import { assertNotSymlink, MAX_CHANGELOG_SIZE } from "../utils/security.js";
 import { splitChangelog } from "../utils/split.js";
+import { formatDate } from "../utils/date.js";
 import type { ToolResponse } from "./types.js";
-
-/**
- * Formats the current date as YYYY-MM-DD.
- */
-function getFormattedDate(): string {
-  const now = new Date();
-  const y = now.getFullYear();
-  const m = String(now.getMonth() + 1).padStart(2, "0");
-  const d = String(now.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
-}
 
 /**
  * Handles the add_entry tool call.
@@ -126,12 +116,12 @@ export async function handleAddEntry(
 
     let nextVersion: string;
     if (currentVersion === FALLBACK_VERSION) {
-      nextVersion = INITIAL_VERSION;
+      nextVersion = getInitialVersion(config.versioning);
     } else {
-      nextVersion = bumpVersion(currentVersion, effectiveBump);
+      nextVersion = bumpVersion(currentVersion, effectiveBump, config.versioning);
     }
 
-    const date = getFormattedDate();
+    const date = formatDate(config.dateFormat);
     const entry = formatter.formatEntry({
       version: nextVersion,
       date,
@@ -142,7 +132,7 @@ export async function handleAddEntry(
     });
 
     // 5. Insert entry at correct position (with configurable spacing)
-    const insertPos = findInsertPosition(content);
+    const { position: insertPos, formatRecognized } = findInsertPosition(content);
     const spacing = "\n".repeat(config.changelog.entrySpacing);
     const newContent =
       content.slice(0, insertPos) + entry + spacing + content.slice(insertPos);
@@ -186,7 +176,13 @@ export async function handleAddEntry(
             `Changelog-Eintrag erfolgreich hinzugefügt.\n` +
             `Version: ${nextVersion}\n` +
             `Kategorie: ${category}\n` +
-            `Datei: ${changelogPath}${sizeWarning}${splitInfo}`,
+            `Datei: ${changelogPath}` +
+            (!formatRecognized
+              ? `\n\nWARNUNG: Kein bekanntes Changelog-Format erkannt. ` +
+                `Der Eintrag wurde am Anfang der Datei eingefügt. ` +
+                `Nutze init_changelog um ein standardkonformes Changelog zu erstellen.`
+              : "") +
+            `${sizeWarning}${splitInfo}`,
         },
       ],
     };
