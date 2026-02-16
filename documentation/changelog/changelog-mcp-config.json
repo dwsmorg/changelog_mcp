@@ -1,0 +1,23 @@
+{
+  "format": "keep-a-changelog",
+  "changelog": {
+    "file": "CHANGELOG.md",
+    "path": "./documentation/changelog",
+    "encoding": "utf-8",
+    "entrySpacing": 3
+  },
+  "backup": {
+    "enabled": true,
+    "path": "./documentation/changelog/backups",
+    "strategy": "daily",
+    "maxFiles": 15
+  },
+  "versioning": {
+    "mode": "patch-only",
+    "prefix": "",
+    "fixedMajor": 1,
+    "fixedMinor": 1
+  },
+  "dateFormat": "YYYY-MM-DD",
+  "language": "en"
+}

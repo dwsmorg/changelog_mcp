@@ -1,0 +1,42 @@
+{
+  "name": "@dwsm/changelog-mcp",
+  "version": "0.1.5",
+  "description": "Universal Changelog MCP Server - manage changelogs from any AI assistant",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "@dwsm/changelog-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "mcp",
+    "changelog",
+    "model-context-protocol",
+    "ai",
+    "claude"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dwsmorg/changelog_mcp.git"
+  },
+  "homepage": "https://github.com/dwsmorg/changelog_mcp#readme",
+  "license": "MIT"
+}
