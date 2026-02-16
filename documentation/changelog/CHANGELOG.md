@@ -1,3 +1,15 @@
+## [0.1.6] - 2026-02-16
+
+### Changed
+- README.md überarbeitet: Installation und Client-Konfiguration in separate Abschnitte aufgeteilt
+  - npm install als eigener Installations-Abschnitt
+  - Client-Konfiguration mit separaten Sektionen für Claude Code, Claude Desktop und Cursor/Windsurf/Cline
+
+### Files
+- README.md
+
+
+
 ## [0.1.5] - 2026-02-15
 
 ### Changed
